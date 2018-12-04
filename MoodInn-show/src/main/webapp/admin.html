@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="plugins/layui/css/layui.css"/>
+		<style type="text/css">
+			#data-inf{
+				padding: 20px;
+			}
+			#data-inf h2{
+				text-align: center;
+				font-weight: 400;
+				margin-bottom: 20px;
+			}
+		</style>
+	</head>
+	<body>
+	<div style="padding: 10px 0 0 10px;">
+		<button class="layui-btn layui-btn-sm" id="btnAdd" data-type="auto">添加</button>
+		<button class="layui-btn layui-btn-sm" id="btnAlldel" data-type="auto">批量删除</button>
+		<div class="layui-input-inline">
+			<input type="text" class="layui-input" id="adminsno" placeholder="请输入需要搜索的账号"/>
+		</div>
+		<div class="layui-input-inline">
+			<input type="text" class="layui-input" id="adminsemail" placeholder="请输入需要搜索的邮箱"/>
+		</div>
+		<div class="layui-input-inline">
+			<input type="text" class="layui-input" id="adminsname" placeholder="请输入需要搜索的昵称"/>
+		</div>
+		<button class="layui-btn layui-btn-sm" id="btnSearch" data-type="auto">搜索</button>
+	</div>
+	<table class="layui-hide" id="test" lay-filter="test"></table>
+
+	<script type="text/html" id="barDemo">
+		<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+		<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+	</script>
+
+	<script src="js/jquery-1.11.3.js" type="text/javascript" charset="utf-8"></script>
+	<script src="plugins/layui/layui.js" type="text/javascript" charset="utf-8"></script>
+		<script>
+			$(function () {
+				getAdminAll();
+            })
+			$("body").on("cilck",'#btnSearch',function () {
+				getAdminAll();
+            })
+			function getAdminAll() {
+                layui.use('table', function () {
+                    var table = layui.table;
+                    table.render({
+                        elem: '#test'
+                        , url: '/AdminApi/getAdminAll'
+                        , title: '系统管理员'
+                        , page: true
+                        , where: {
+                            adminno: $("#adminsno").val()
+                            , adminemail: $("#adminsemail").val()
+                            , adminsname: $("#adminsname").val()
+                        }
+                        , cols: [[
+                            {type: 'checkbox', fixed: 'left'}
+                            , {field: 'admimid', title: '管理员编号',width:120, fixed: 'left', unresize: true, sort: true}
+                            , {field: 'adminno', title: '管理员账号'}
+                            , {field: 'adminemail', title: '管理员邮箱'}
+                            , {field: 'adminpwd', title: '管理员密码'}
+                            , {field: 'adminname', title: '管理员名称'}
+                            , {field: 'adminhead', title: '管理员头像'}
+                            , {field: 'admintitle', title: '管理员签名'}
+                            , {fixed: 'right', title: '操作', toolbar: '#barDemo', width: 150}
+                        ]]
+                    });
+                    //监听行工具事件
+                    table.on('tool(test)', function (obj) {
+                        var data = obj.data;
+                        //console.log(obj)
+                        if (obj.event === 'del') {
+                            layer.confirm('真的删除行么', function (index) {
+                                obj.del();
+                                layer.close(index);
+                            });
+                        } else if (obj.event === 'edit') {
+                            layer.prompt({
+                                formType: 2
+                                , value: data.email
+                            }, function (value, index) {
+                                obj.update({
+                                    email: value
+                                });
+                                layer.close(index);
+                            });
+                        }
+                    });
+                });
+            };
+            $("#btnAdd").click(function() {
+                layer.open({
+                    type: 1,
+                    title:"添加用户",
+                    shade: [0.4, '#393D49'],
+                    area: ['500px', '450px'],
+                    maxmin: true,
+                    content: $("#form1"),
+                    zIndex: layer.zIndex, //重点1
+                    success: function(layero) {
+                        layer.setTop(layero); //重点2
+                    },
+                    cancel: function() {
+                        //右上角关闭回调
+
+                        //return false //开启该代码可禁止点击该按钮关闭
+                    }
+                });
+            });
+		</script>
+	</body>
+	<div id="form1" hidden="hidden">
+		<div id="data-inf">
+			<h2>添加用户信息</h2>
+			<div class="layui-form-item">
+				<label class="layui-form-label">账号：</label>
+				<div class="layui-input-inline">
+					<input type="text" id="userno" required lay-verify="required" placeholder="请输入账号" autocomplete="off" class="layui-input">
+				</div>
+				<div class="layui-form-mid layui-word-aux" id="usernoMsg">*</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">邮箱：</label>
+				<div class="layui-input-inline">
+					<input type="text" id="useremail" required lay-verify="required" placeholder="请输入邮箱" autocomplete="off" class="layui-input">
+				</div>
+				<div class="layui-form-mid layui-word-aux" id="useremailMsg">*</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">昵称：</label>
+				<div class="layui-input-inline">
+					<input type="text" id="username" required lay-verify="required" placeholder="请输入昵称" autocomplete="off" class="layui-input">
+				</div>
+				<div class="layui-form-mid layui-word-aux" id="usernameMsg">*</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">密码：</label>
+				<div class="layui-input-inline">
+					<input type="password" id="userpwdone" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+				</div>
+				<div class="layui-form-mid layui-word-aux" id="userPwdonemsg">*</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">确认密码：</label>
+				<div class="layui-input-inline">
+					<input type="password" id="userpwdtwo" required lay-verify="required" placeholder="请再次输入密码" autocomplete="off" class="layui-input">
+				</div>
+				<div class="layui-form-mid layui-word-aux" id="userpwdtwoMsg">*</div>
+			</div>
+			<div class="layui-form-item">
+				<div class="layui-input-block">
+					<button type="button" class="layui-btn" lay-filter="formDemo">立即提交</button>
+					<button type="button" class="layui-btn">重置</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</html>

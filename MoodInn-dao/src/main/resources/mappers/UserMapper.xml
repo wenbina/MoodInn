@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--命名空间应该是对应接口的包名+接口名 -->
+<mapper namespace="com.wenbin.moodinnpro.dao.UserDao">
+    <!--查询-->
+    <select id="getUserAll" resultType="Users">
+        select * from Users
+    </select>
+    <!--查询用户数量-->
+    <select id="getCountAll" resultType="int">
+        select count(*) from users
+        <where>
+            <if test="userno!=null and userno!=''">
+                and userno = #{userno}
+            </if>
+            <if test="useremail!=null and useremail!=''">
+                and useremail = #{useremail}
+            </if>
+            <if test="username!=null and username!=''">
+                and username like concat(concat('%',#{username}),'%')
+            </if>
+        </where>
+    </select>
+    <!--查询全部用户-->
+    <select id="getAll" resultType="Users">
+        select * from users
+        <where>
+            <if test="userno!=null and userno!=''">
+                and userno = #{userno}
+            </if>
+            <if test="useremail!=null and useremail!=''">
+                and useremail = #{useremail}
+            </if>
+            <if test="username!=null and username!=''">
+                and username like concat(concat('%',#{username}),'%')
+            </if>
+        </where>
+        limit #{page},#{limit}
+    </select>
+    <!--添加-->
+    <insert id="insertUser" parameterType="Users">
+        insert into users(userno, useremail, userpwd, username) values (#{userno},#{useremail},#{userpwd},#{username})
+    </insert>
+    <!--删除-->
+    <delete id="deleteUser" parameterType="int">
+        delete from users where userid=#{userid}
+    </delete>
+    <!--修改-->
+    <update id="updateUser" parameterType="Users">
+        update users
+        <set>
+            <if test="userpwd!=null and userpwd!=''">
+                userpwd=#{userpwd}
+            </if>
+            <if test="usermail!=null and usermail!=''">
+                and usermail=#{usermail}
+            </if>
+            <if test="username!=null and username!=''">
+                and username=#{username}
+            </if>
+            <if test="userhead!=null and userhead!=''">
+                and userhead=#{userhead}
+            </if>
+            <if test="usertitle!=null and usertitle!=''">
+                and usertitle=#{usertitle}
+            </if>
+        </set>
+        where userid=#{userid}
+    </update>
+</mapper>

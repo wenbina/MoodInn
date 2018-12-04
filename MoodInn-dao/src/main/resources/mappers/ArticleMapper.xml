@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--命名空间应该是对应接口的包名+接口名 -->
+<mapper namespace="com.wenbin.moodinnpro.dao.ArticleDao">
+    <!--查询所有数据数量-->
+    <select id="getCountAll" resultType="int" resultMap="ArticleMapper">
+        select count(*) from articles
+    </select>
+    <!--查询所有数据-->
+    <select id="getArticleAll" resultType="Articles" resultMap="ArticleMapper">
+        SELECT
+        articles.articleid,
+        articles.articletitle,
+        articles.articlecont,
+        `columns`.Columnname,
+        users.username,
+        articles.articledate,
+        articles.articlebrow,
+        users.username
+        FROM
+        articles
+        INNER JOIN users ON users.userid = articles.userid
+        INNER JOIN `columns` ON `columns`.Columnid = articles.columnid
+    </select>
+    <resultMap id="ArticleMapper" type="Articles">
+        <id property="articleid" column="articleid"/>
+        <result property="articletitle" column="articletitle"/>
+        <result property="articlecont" column="articlecont"/>
+        <result property="columnid" column="columnid"/>
+        <result property="userid" column="userid"/>
+        <result property="articledate" column="articledate"/>
+        <result property="articlebrow" column="articlebrow"></result>
+        <association property="users" javaType="Users" resultMap="TypeMap"/>
+        <association property="columns" javaType="Columns" resultMap="MapType"/>
+    </resultMap>
+    <resultMap id="TypeMap" type="Users">
+        <id column="userid" property="userid"/>
+        <result property="username" column="username"/>
+    </resultMap>
+    <resultMap id="MapType" type="Columns">
+        <id property="columnid" column="columnid"/>
+        <result property="columnname" column="columnname"/>
+    </resultMap>
+</mapper>

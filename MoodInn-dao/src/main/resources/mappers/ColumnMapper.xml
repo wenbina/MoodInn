@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--命名空间应该是对应接口的包名+接口名 -->
+<mapper namespace="com.wenbin.moodinnpro.dao.ColumnDao">
+    <select id="getColumnAll" resultType="Columns" resultMap="ColumnMapper">
+        SELECT
+        `columns`.Columnid,
+        `columns`.Columnname,
+        users.username,
+        `columns`.Columndate,
+        `columns`.Columntitle,
+        `columns`.Columnhead,
+        `columns`.Columnbg
+        FROM
+        `columns`
+        INNER JOIN users ON `columns`.userid = users.userid
+    </select>
+    <resultMap id="ColumnMapper" type="Columns">
+        <id column="columnid" property="columnid"/>
+        <result property="columnname" column="columnname"/>
+        <result property="userid" column="userid"/>
+        <result property="columndate" column="columndate"/>
+        <result property="columntitle" column="columntitle"/>
+        <result property="columnhead" column="columnhead"/>
+        <result property="columnbg" column="columnbg"/>
+        <association property="users" javaType="Users" resultMap="TypeMap"/>
+    </resultMap>
+    <resultMap id="TypeMap" type="Users">
+        <id column="userid" property="userid"/>
+        <result property="username" column="username"/>
+    </resultMap>
+</mapper>

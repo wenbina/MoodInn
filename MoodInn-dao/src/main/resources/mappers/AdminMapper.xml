@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--命名空间应该是对应接口的包名+接口名 -->
+<mapper namespace="com.wenbin.moodinnpro.dao.AdminDao">
+    <!--查询所有管理员-->
+    <select id="getAdminAll" resultType="Admins">
+        select * from admins
+        <where>
+            <if test="adminno!=null and adminno!=''">
+                and adminno=#{adminno}
+            </if>
+            <if test="adminemail!=null and adminemail!=''">
+                and adminemail=#{adminemail}
+            </if>
+            <if test="adminname!=null and adminname!=''">
+                and adminame=#{adminname}
+            </if>
+        </where>
+        limit #{page},#{limit}
+    </select>
+    <!--查询管理员数量-->
+    <select id="getAdminCount" resultType="int">
+        select count(*) from admins
+        <where>
+            <if test="adminno!=null and adminno!=''">
+                and adminno=#{adminno}
+            </if>
+            <if test="adminemail!=null and adminemail!=''">
+                and adminemail=#{adminemail}
+            </if>
+            <if test="adminname!=null and adminname!=''">
+                and adminname=#{adminname}
+            </if>
+        </where>
+    </select>
+    <!--login-->
+    <select id="loginAdmin" resultType="int" parameterType="Admins">
+        select count(*) from admins
+        <where>
+            <if test="adminno!=null and adminno!=''">
+                adminno=#{adminno}
+            </if>
+            <if test="adminemail!=null and adminemail!=''">
+               adminemail=#{adminemail}
+            </if>
+            <if test="adminpwd!=null and adminpwd!=''">
+                and adminpwd=#{adminpwd}
+            </if>
+        </where>
+    </select>
+</mapper>
